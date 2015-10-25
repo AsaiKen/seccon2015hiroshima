@@ -1,0 +1,17 @@
+pkill -9 arm-elf-run
+pkill -9 bfin-elf-run
+pkill -9 cr16-elf-run
+pkill -9 cris-elf-run
+pkill -9 frv-elf-run
+pkill -9 h8300-elf-run
+pkill -9 m32c-elf-run
+pkill -9 m32r-elf-run
+pkill -9 mcore-elf-run
+pkill -9 mips-elf-run
+pkill -9 mips16-elf-run
+pkill -9 mn10300-elf-run
+pkill -9 powerpc-elf-run
+pkill -9 rx-elf-run
+pkill -9 sh-elf-run
+pkill -9 sh64-elf-run
+pkill -9 v850-elf-run
