@@ -8,7 +8,7 @@ http://seccon2015.connpass.com/event/21015/
 
 Comment
 --------
-I solved 12 of 38 problems during the contest (3 hours).
+I solved 14 of 38 problems during the contest (3 hours).
 
 I wrote exploits in the following steps.
 
