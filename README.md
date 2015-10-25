@@ -9,6 +9,7 @@ http://seccon2015.connpass.com/event/21015/
 Comment
 --------
 I solved 12 of 38 problems during the contest (3 hours).
+
 I wrote exploits in the following steps.
 
 1. understand ABI by reading objdump's outputs of binaries and lib-xxx-elf.S files in cross-20130826.tgz.
@@ -17,5 +18,6 @@ I wrote exploits in the following steps.
 4. write exploits with "HOT BLOOD".
 
 I'd forgotten to download binaries in the 'difficult' category :(
+
 (Sorry, @bata_24.)
 
