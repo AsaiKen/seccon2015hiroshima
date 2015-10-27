@@ -1,4 +1,4 @@
-chmod u+x ./*.sh
+chmod u+x ./script/*.sh
 
 pkill -9 socat
 . ./pkill.sh
