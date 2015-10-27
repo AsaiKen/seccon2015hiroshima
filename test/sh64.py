@@ -1,6 +1,4 @@
-START_MODE = 'sh'
-if START_MODE == 'sh':
-    asm = '''.section .text
+asm = '''.section .text
 .global _start
 .ascii "%s"
 _start:
@@ -40,13 +38,6 @@ get_addr:
 # padding byte
 .byte 0xff
 .ascii "%s"
-'''
-    pass
-else:
-    asm = '''.section .text
-.global _start
-.ascii "%s"
-_start:
 '''
 import os
 from lib.mylib import *
