@@ -56,3 +56,8 @@ def sl(s, data):
 def l(data):
     log_f = open('/tmp/senddata', mode='ab')
     log_f.write(data)
+
+
+def check_nul(stager):
+    if '\x00' in stager:
+        raise Exception('contains NUL!')

