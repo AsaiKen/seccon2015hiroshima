@@ -1,0 +1,2 @@
+I solved problems in the difficult category by making stagers without \x0A and \x00.
+Each stager works to disable the filter by overwrite the code segment or call read syscall.
