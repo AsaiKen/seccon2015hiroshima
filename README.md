@@ -17,7 +17,4 @@ I wrote exploits in the following steps.
 3. get offsets of BOF and stack addresses by using gdb or simulator.
 4. write exploits with "HOT BLOOD".
 
-I'd forgotten to download binaries in the 'difficult' category :(
-
-(Sorry, @bata_24.)
 
