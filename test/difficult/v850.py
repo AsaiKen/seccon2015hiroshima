@@ -8,7 +8,7 @@ _start:
     # 0x00 == nop
     xor r9, r9
     st.w r9, -2[r8
-    jr 0x1400 - (0x1ae4 + 114)
+    jr 0x1400 - (0x1ae4 + 16)
 .ascii "%s"
 '''
 asm = '''.section .text

