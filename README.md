@@ -1,6 +1,6 @@
 Overview
 --------
-Writeups of SECCON2015 qualifying round in Hiroshima
+Writeups of SECCON2015 qualifying round in Hiroshima (I'm 1st.)
 
 Contest URL
 --------
